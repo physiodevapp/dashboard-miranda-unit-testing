@@ -4,14 +4,8 @@ function checkDate(dateString) {
 
   const match = dateString.match(regex);
 
-  const result = {
-    isValid: true,
-    error: null
-  }
-
   if (!match) {
-    result.error = new Error('Invalid date format. Please use dd/mm/yyyy.');
-    result.isValid = false;
+    throw new Error('Invalid date format. Please use dd/mm/yyyy.');
   }
 
   const day = parseInt(match[1], 10);
@@ -21,11 +15,10 @@ function checkDate(dateString) {
   const date = new Date(year, month, day);
 
   if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) {
-    result.error = new Error('Invalid date. Please check the day, month, and year.');
-    result.isValid = false;
+    throw new Error('Invalid date. Please check the day, month, and year.');
   }
 
-  return result;
+  return date;
 }
 
 
@@ -38,16 +31,17 @@ class Room {
     this.discount = discount;
   }
 
-  isOccupied(dateString) {     
-    const { isValid, error } = checkDate(dateString);
+  isOccupied(dateString) {   
+    try {
+      checkDate(dateString);
 
-    if (isValid)
       return !!this.bookingList.find((booking) => (
         dateString >= booking.checkIn && 
         dateString < booking.checkOut
       ));  
-    else 
+    } catch (error) {
       throw error
+    }
   };
 }
 
