@@ -160,6 +160,16 @@ class Booking {
     this.discount = discount;
     this.room = room;
   }
+
+  getFee() {
+    if (this.discount < 0 || this.room.discount < 0)
+      throw new Error("Invalid discount value")
+    
+    const roomDiscountRate = (100 - this.room.discount) * this.room.rate / 100;
+    const finalRate = (100 - this.discount) * roomDiscountRate / 100;
+
+    return finalRate;
+  }
 }
 
 module.exports = {
