@@ -107,7 +107,7 @@ class Room {
                 (occupiedDate) => occupiedDate === currentDate
               )
             )
-              occupiedDates.push(currentDate);
+            occupiedDates.push(currentDate);
           });
 
           return occupiedDates;
@@ -116,9 +116,37 @@ class Room {
           100
       );
 
-      return result
+      return result;
     } catch (error) {
-      throw error
+      throw error;
+    }
+  }
+
+  static availableRooms(rooms, startDateString, endDateString) {
+    try {
+      const betweenDates = [startDateString, endDateString].map((dateString) =>
+        checkDate(dateString)
+      );
+      const currentDate = new Date(betweenDates[0]);
+      const lastDate = new Date(betweenDates[1]);
+      const dates = getDatesBetween(currentDate, lastDate);
+
+      return rooms.reduce((availableRooms, currentRoom) => {
+        let availableDays = 0;
+        
+        dates.forEach((date) => {
+          if (!currentRoom.isOccupied(date))
+            availableDays++
+        })
+        
+        if (availableDays === dates.length)
+          availableRooms.push(currentRoom)
+
+        return availableRooms;
+      }, [])
+
+    } catch (error) {
+      throw error;
     }
   }
 }
