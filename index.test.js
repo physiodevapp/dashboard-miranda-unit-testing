@@ -1,15 +1,21 @@
 
-const { Room } = require('./index')
+const { Room, Booking } = require('./index');
+
+const bookingTemplate = { name: "Edu", email: "edu@email.com", discount: 10 };
+const roomTemplate = { name: "Suite A", rate: 4, discount: 5 };
 
 describe("Room tests", () => {
 
   test('isOccupied Room method', () => {
     
-    const room = new Room();
+    const room = new Room({...roomTemplate});
+    const booking1 = new Booking({...bookingTemplate, room, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const booking2 = new Booking({...bookingTemplate, room, checkIn: "12/07/2024", checkOut: "20/07/2024"});
+    room.bookingList = [booking1, booking2];
 
-    const isOccupied = room.isOccupied('09/07/2024');
+    const isOccupied = room.isOccupied("19/07/2024");
 
-    expect(isOccupied).toBe(false);
+    expect(isOccupied).toBe(true);
 
   });
   
