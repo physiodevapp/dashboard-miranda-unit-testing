@@ -74,13 +74,13 @@ describe("Room tests", () => {
 
   test("Total occupancy between dates", () => {
     const room1 = new Room({...roomTemplate});
-    const room1Booking1 = new Booking({...bookingTemplate, room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
-    const room1Booking2 = new Booking({...bookingTemplate, room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    const room1Booking1 = new Booking({...bookingTemplate, room: room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room: room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
     room1.bookingList = [room1Booking1, room1Booking2];
 
     const room2 = new Room({...roomTemplate, name: "Suite B"});
-    const room2Booking1 = new Booking({...bookingTemplate, room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
-    const room2Booking2 = new Booking({...bookingTemplate, room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    const room2Booking1 = new Booking({...bookingTemplate, room: room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room: room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
     room2.bookingList = [room2Booking1, room2Booking2];
 
     const totalOccupancy = Room.totalOccupancyPercentage([room1, room2], "08/07/2024", "15/07/2024");
@@ -90,13 +90,13 @@ describe("Room tests", () => {
 
   test("Invalid range of dates for total occupancy", () => {
     const room1 = new Room({...roomTemplate});
-    const room1Booking1 = new Booking({...bookingTemplate, room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
-    const room1Booking2 = new Booking({...bookingTemplate, room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    const room1Booking1 = new Booking({...bookingTemplate, room: room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room: room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
     room1.bookingList = [room1Booking1, room1Booking2];
 
     const room2 = new Room({...roomTemplate, name: "Suite B"});
-    const room2Booking1 = new Booking({...bookingTemplate, room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
-    const room2Booking2 = new Booking({...bookingTemplate, room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    const room2Booking1 = new Booking({...bookingTemplate, room: room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room: room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
     room2.bookingList = [room2Booking1, room2Booking2];
 
     const totalOccupancyCallback = () => Room.totalOccupancyPercentage([room1, room2], "28/07/2024", "15/07/2024");
@@ -106,18 +106,82 @@ describe("Room tests", () => {
 
   test("Invalid dates for totalOccupancyPercentage method", () => {
     const room1 = new Room({...roomTemplate});
-    const room1Booking1 = new Booking({...bookingTemplate, room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
-    const room1Booking2 = new Booking({...bookingTemplate, room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    const room1Booking1 = new Booking({...bookingTemplate, room: room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room: room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
     room1.bookingList = [room1Booking1, room1Booking2];
 
     const room2 = new Room({...roomTemplate, name: "Suite B"});
-    const room2Booking1 = new Booking({...bookingTemplate, room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
-    const room2Booking2 = new Booking({...bookingTemplate, room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    const room2Booking1 = new Booking({...bookingTemplate, room: room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room: room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
     room2.bookingList = [room2Booking1, room2Booking2];
 
     const totalOccupancyCallback = () => Room.totalOccupancyPercentage([room1, room2], "28/07/2024", "gfd07/2024");
 
     expect(totalOccupancyCallback).toThrow();
+  });
+
+  test("One available rooms", () => {
+    const room1 = new Room({...roomTemplate});
+    const room1Booking1 = new Booking({...bookingTemplate, room: room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room: room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    room1.bookingList = [room1Booking1, room1Booking2];
+
+    const room2 = new Room({...roomTemplate, name: "Suite B"});
+    const room2Booking1 = new Booking({...bookingTemplate, room: room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room: room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    room2.bookingList = [room2Booking1, room2Booking2];
+
+    const availableRooms = Room.availableRooms([room1, room2], "02/07/2024", "09/07/2024")
+
+    expect(availableRooms.length).toBe(1);
+  });
+
+  test("None available rooms", () => {
+    const room1 = new Room({...roomTemplate});
+    const room1Booking1 = new Booking({...bookingTemplate, room: room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room: room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    room1.bookingList = [room1Booking1, room1Booking2];
+
+    const room2 = new Room({...roomTemplate, name: "Suite B"});
+    const room2Booking1 = new Booking({...bookingTemplate, room: room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room: room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    room2.bookingList = [room2Booking1, room2Booking2];
+
+    const availableRooms = Room.availableRooms([room1, room2], "02/07/2024", "14/07/2024")
+
+    expect(availableRooms.length).toBe(0);
+  });
+
+  test("Invalid range of dates for available rooms", () => {
+    const room1 = new Room({...roomTemplate});
+    const room1Booking1 = new Booking({...bookingTemplate, room: room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room: room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    room1.bookingList = [room1Booking1, room1Booking2];
+
+    const room2 = new Room({...roomTemplate, name: "Suite B"});
+    const room2Booking1 = new Booking({...bookingTemplate, room: room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room: room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    room2.bookingList = [room2Booking1, room2Booking2];
+
+    const availableRoomsCallback = () => Room.availableRooms([room1, room2], "20/07/2024", "14/07/2024")
+
+    expect(availableRoomsCallback).toThrow();
+  });
+
+  test("Invalid dates for availableRooms method", () => {
+    const room1 = new Room({...roomTemplate});
+    const room1Booking1 = new Booking({...bookingTemplate, room: room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room: room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    room1.bookingList = [room1Booking1, room1Booking2];
+
+    const room2 = new Room({...roomTemplate, name: "Suite B"});
+    const room2Booking1 = new Booking({...bookingTemplate, room: room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room: room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    room2.bookingList = [room2Booking1, room2Booking2];
+
+    const availableRoomsCallback = () => Room.availableRooms([room1, room2], "20/07/2024", "14/gfd/2024")
+
+    expect(availableRoomsCallback).toThrow();
   });
 
 });
