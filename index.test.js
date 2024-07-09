@@ -34,9 +34,9 @@ describe("Room tests", () => {
     const booking2 = new Booking({...bookingTemplate, room, checkIn: "12/07/2024", checkOut: "20/07/2024"});
     room.bookingList = [booking1, booking2];
 
+    const isOccupiedCallback = () => room.isOccupied("fdsafads")
 
-
-    expect(() => room.isOccupied("fdsafads")).toThrow()
+    expect(isOccupiedCallback).toThrow()
   }); 
   
   test("Room occupancy percentage", () => {
@@ -56,9 +56,9 @@ describe("Room tests", () => {
     const booking2 = new Booking({...bookingTemplate, room, checkIn: "12/07/2024", checkOut: "20/07/2024"});
     room.bookingList = [booking1, booking2];
 
+    const occupancyCallback = () => room.occupancyPercentage("28/07/2024", "18/07/2024")
 
-
-    expect(() => room.occupancyPercentage("28/07/2024", "18/07/2024")).toThrow();
+    expect(occupancyCallback).toThrow();
   });
 
   test("Invalid dates for occupancyPercentage method", () => {
@@ -67,9 +67,57 @@ describe("Room tests", () => {
     const booking2 = new Booking({...bookingTemplate, room, checkIn: "12/07/2024", checkOut: "20/07/2024"});
     room.bookingList = [booking1, booking2];
 
+    const occupancyCallback = () => room.occupancyPercentage("gfdgfds", "18/07/2024")
 
+    expect(occupancyCallback).toThrow();
+  });
 
-    expect(() => room.occupancyPercentage("gfdgfds", "18/07/2024")).toThrow();
+  test("Total occupancy between dates", () => {
+    const room1 = new Room({...roomTemplate});
+    const room1Booking1 = new Booking({...bookingTemplate, room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    room1.bookingList = [room1Booking1, room1Booking2];
+
+    const room2 = new Room({...roomTemplate, name: "Suite B"});
+    const room2Booking1 = new Booking({...bookingTemplate, room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    room2.bookingList = [room2Booking1, room2Booking2];
+
+    const totalOccupancy = Room.totalOccupancyPercentage([room1, room2], "08/07/2024", "15/07/2024");
+
+    expect(totalOccupancy).toBe(75);
+  });
+
+  test("Invalid range of dates for total occupancy", () => {
+    const room1 = new Room({...roomTemplate});
+    const room1Booking1 = new Booking({...bookingTemplate, room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    room1.bookingList = [room1Booking1, room1Booking2];
+
+    const room2 = new Room({...roomTemplate, name: "Suite B"});
+    const room2Booking1 = new Booking({...bookingTemplate, room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    room2.bookingList = [room2Booking1, room2Booking2];
+
+    const totalOccupancyCallback = () => Room.totalOccupancyPercentage([room1, room2], "28/07/2024", "15/07/2024");
+
+    expect(totalOccupancyCallback).toThrow();
+  });
+
+  test("Invalid dates for totalOccupancyPercentage method", () => {
+    const room1 = new Room({...roomTemplate});
+    const room1Booking1 = new Booking({...bookingTemplate, room1, checkIn: "10/07/2024", checkOut: "13/07/2024"});
+    const room1Booking2 = new Booking({...bookingTemplate, room1, checkIn: "15/07/2024", checkOut: "16/07/2024"});
+    room1.bookingList = [room1Booking1, room1Booking2];
+
+    const room2 = new Room({...roomTemplate, name: "Suite B"});
+    const room2Booking1 = new Booking({...bookingTemplate, room2, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+    const room2Booking2 = new Booking({...bookingTemplate, room2, checkIn: "12/07/2024", checkOut: "14/07/2024"});
+    room2.bookingList = [room2Booking1, room2Booking2];
+
+    const totalOccupancyCallback = () => Room.totalOccupancyPercentage([room1, room2], "28/07/2024", "gfd07/2024");
+
+    expect(totalOccupancyCallback).toThrow();
   });
 
 });

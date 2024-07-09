@@ -88,6 +88,39 @@ class Room {
       throw error;
     }
   }
+
+  static totalOccupancyPercentage(rooms, startDateString, endDateString) {
+    try {
+      const betweenDates = [startDateString, endDateString].map((dateString) =>
+        checkDate(dateString)
+      );
+      const currentDate = new Date(betweenDates[0]);
+      const lastDate = new Date(betweenDates[1]);
+      const dates = getDatesBetween(currentDate, lastDate);
+
+      const result = Math.round(
+        (dates.reduce((occupiedDates, currentDate) => {
+          rooms.forEach((room) => {
+            if (
+              room.isOccupied(currentDate) &&
+              !occupiedDates.find(
+                (occupiedDate) => occupiedDate === currentDate
+              )
+            )
+              occupiedDates.push(currentDate);
+          });
+
+          return occupiedDates;
+        }, []).length /
+          dates.length) *
+          100
+      );
+
+      return result
+    } catch (error) {
+      throw error
+    }
+  }
 }
 
 class Booking {
