@@ -2,7 +2,7 @@
 const { Room, Booking } = require('./index');
 
 const bookingTemplate = { name: "Edu", email: "edu@email.com", discount: 10 };
-const roomTemplate = { name: "Suite A", rate: 4, discount: 5 };
+const roomTemplate = { name: "Suite A", rate: 18000, discount: 5 };
 
 describe("Room tests", () => {
 
@@ -183,5 +183,32 @@ describe("Room tests", () => {
 
     expect(availableRoomsCallback).toThrow();
   });
+
+  test("Get booking fee", () => {
+    const room = new Room({...roomTemplate});
+    const booking = new Booking({...bookingTemplate, room, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+
+    const discountRate = booking.getFee()
+
+    expect(discountRate).toBe(15390)
+  })
+
+  test("Invalid room discount value", () => {
+    const room = new Room({...roomTemplate, discount: -10});
+    const booking = new Booking({...bookingTemplate, room, checkIn: "09/07/2024", checkOut: "10/07/2024"});
+
+    const discountRateCallback = () => booking.getFee();
+
+    expect(discountRateCallback).toThrow();
+  })
+
+  test("Invalid booking discount value", () => {
+    const room = new Room({...roomTemplate});
+    const booking = new Booking({...bookingTemplate, room, checkIn: "09/07/2024", checkOut: "10/07/2024", discount: -10});
+
+    const discountRateCallback = () => booking.getFee();
+
+    expect(discountRateCallback).toThrow();
+  })
 
 });
