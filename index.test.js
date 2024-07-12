@@ -184,6 +184,10 @@ describe("Room tests", () => {
     expect(availableRoomsCallback).toThrow();
   });
 
+});
+
+describe("Booking tests", () => {
+
   test("Get booking fee", () => {
     const room = new Room({...roomTemplate});
     const booking = new Booking({...bookingTemplate, room, checkIn: "09/07/2024", checkOut: "10/07/2024"});
