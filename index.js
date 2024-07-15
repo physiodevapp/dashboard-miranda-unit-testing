@@ -59,7 +59,7 @@ class Room {
     try {
       checkDate(dateString);
 
-      return !!this.bookingList.find(
+      return this.bookingList.some(
         (booking) =>
           dateString >= booking.checkIn && dateString < booking.checkOut
       );
@@ -103,7 +103,7 @@ class Room {
           rooms.forEach((room) => {
             if (
               room.isOccupied(currentDate) &&
-              !occupiedDates.find(
+              !occupiedDates.some(
                 (occupiedDate) => occupiedDate === currentDate
               )
             )
