@@ -78,98 +78,81 @@ export class Room {
   }
 
   isOccupied(dateString: string): boolean {
-    try {
-      checkDate(dateString);
+    checkDate(dateString);
 
-      return this.bookingList.some(
-        (booking: BookingInterface) =>
-          dateString >= booking.checkIn && dateString < booking.checkOut
-      );
-    } catch (error) {
-      throw error;
-    }
+    return this.bookingList.some(
+      (booking: BookingInterface) =>
+        dateString >= booking.checkIn && dateString < booking.checkOut
+    );
   }
 
   occupancyPercentage(startDateString: string, endDateString: string): number {
-    try {
-      const betweenDates: Date[] = [startDateString, endDateString].map((dateString: string) =>
-        checkDate(dateString)
-      );
-      const currentDate: Date = new Date(betweenDates[0]);
-      const lastDate: Date = new Date(betweenDates[1]);
-      const dates: string[] = getDatesBetween(currentDate, lastDate);
+    const betweenDates: Date[] = [startDateString, endDateString].map((dateString: string) =>
+      checkDate(dateString)
+    );
+    const currentDate: Date = new Date(betweenDates[0]);
+    const lastDate: Date = new Date(betweenDates[1]);
+    const dates: string[] = getDatesBetween(currentDate, lastDate);
 
-      return Math.round(
-        (dates
-          .map((date: string) => this.isOccupied(date))
-          .filter((isOccupied: boolean) => isOccupied === true).length /
-          dates.length) *
-          100
-      );
-    } catch (error) {
-      throw error;
-    }
+    return Math.round(
+      (dates
+        .map((date: string) => this.isOccupied(date))
+        .filter((isOccupied: boolean) => isOccupied === true).length /
+        dates.length) *
+        100
+    );
   }
 
   static totalOccupancyPercentage(rooms: Room[], startDateString: string, endDateString: string): number {
-    try {
-      const betweenDates: Date[] = [startDateString, endDateString].map((dateString: string) =>
-        checkDate(dateString)
-      );
-      const currentDate: Date = new Date(betweenDates[0]);
-      const lastDate: Date = new Date(betweenDates[1]);
-      const dates: string[] = getDatesBetween(currentDate, lastDate);
+    const betweenDates: Date[] = [startDateString, endDateString].map((dateString: string) =>
+      checkDate(dateString)
+    );
+    const currentDate: Date = new Date(betweenDates[0]);
+    const lastDate: Date = new Date(betweenDates[1]);
+    const dates: string[] = getDatesBetween(currentDate, lastDate);
 
-      const result: number = Math.round(
-        (dates.reduce((occupiedDates: string[], currentDate: string) => {
-          rooms.forEach((room: Room) => {
-            if (
-              room.isOccupied(currentDate) &&
-              !occupiedDates.some(
-                (occupiedDate: string) => occupiedDate === currentDate
-              )
+    const result: number = Math.round(
+      (dates.reduce((occupiedDates: string[], currentDate: string) => {
+        rooms.forEach((room: Room) => {
+          if (
+            room.isOccupied(currentDate) &&
+            !occupiedDates.some(
+              (occupiedDate: string) => occupiedDate === currentDate
             )
-            occupiedDates.push(currentDate);
-          });
+          )
+          occupiedDates.push(currentDate);
+        });
 
-          return occupiedDates;
-        }, []).length /
-          dates.length) *
-          100
-      );
+        return occupiedDates;
+      }, []).length /
+        dates.length) *
+        100
+    );
 
-      return result;
-    } catch (error) {
-      throw error;
-    }
+    return result;
   }
 
   static availableRooms(rooms: Room[], startDateString: string, endDateString: string) {
-    try {
-      const betweenDates: Date[] = [startDateString, endDateString].map((dateString: string) =>
-        checkDate(dateString)
-      );
-      const currentDate: Date = new Date(betweenDates[0]);
-      const lastDate: Date = new Date(betweenDates[1]);
-      const dates: string[] = getDatesBetween(currentDate, lastDate);
+    const betweenDates: Date[] = [startDateString, endDateString].map((dateString: string) =>
+      checkDate(dateString)
+    );
+    const currentDate: Date = new Date(betweenDates[0]);
+    const lastDate: Date = new Date(betweenDates[1]);
+    const dates: string[] = getDatesBetween(currentDate, lastDate);
 
-      return rooms.reduce((availableRooms: Room[], currentRoom: Room) => {
-        let availableDays: number = 0;
-        
-        dates.forEach((date) => {
-          if (!currentRoom.isOccupied(date))
-            availableDays = availableDays + 1;
-        })
-        
-        if (availableDays === dates.length)
-          availableRooms.push(currentRoom);
+    return rooms.reduce((availableRooms: Room[], currentRoom: Room) => {
+      let availableDays: number = 0;
+      
+      dates.forEach((date) => {
+        if (!currentRoom.isOccupied(date))
+          availableDays = availableDays + 1;
+      })
+      
+      if (availableDays === dates.length)
+        availableRooms.push(currentRoom);
 
-        return availableRooms;
-      }, [])
-
-    } catch (error) {
-      throw error;
-    }
+      return availableRooms;
+    }, [])
   }
 }
 
