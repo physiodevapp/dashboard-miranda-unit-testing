@@ -176,9 +176,16 @@ export class Booking {
   getFee(): number {
     if (this.discount < 0 || this.room.discount < 0)
       throw new Error("Invalid discount value")
+
+    const betweenDates: Date[] = [this.checkIn, this.checkOut].map((dateString: string) =>
+      checkDate(dateString)
+    );
+    const currentDate: Date = new Date(betweenDates[0]);
+    const lastDate: Date = new Date(betweenDates[1]);
+    const bookedDays: number = getDatesBetween(currentDate, lastDate).length - 1;
     
     const roomDiscountRate: number = (100 - this.room.discount) * this.room.rate / 100;
-    const finalRate: number = (100 - this.discount) * roomDiscountRate / 100;
+    const finalRate: number = (100 - this.discount) * bookedDays * roomDiscountRate / 100;
 
     return finalRate;
   }
