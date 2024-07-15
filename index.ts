@@ -96,8 +96,7 @@ export class Room {
 
     return Math.round(
       (dates
-        .map((date: string) => this.isOccupied(date))
-        .filter((isOccupied: boolean) => isOccupied === true).length /
+        .filter((date: string) => this.isOccupied(date)).length /
         dates.length) *
         100
     );
